@@ -23,9 +23,11 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
-import rx.Observable;
-import rx.Scheduler;
-import rx.functions.Func1;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Scheduler;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Function;
 
 public class SocketConnectionImpl implements SocketConnection {
 
@@ -47,15 +49,15 @@ public class SocketConnectionImpl implements SocketConnection {
     }
 
     @Nonnull
-    private Func1<Observable<? extends Throwable>, Observable<?>> repeatDuration(final long delay,
-                                                                                 @Nonnull final TimeUnit timeUnit) {
-        return new Func1<Observable<? extends Throwable>, Observable<?>>() {
+    private Function<Observable<? extends Throwable>, ObservableSource<?>> repeatDuration(final long delay,
+                                                                                          @Nonnull final TimeUnit timeUnit) {
+        return new Function<Observable<? extends Throwable>, ObservableSource<?>>() {
             @Override
-            public Observable<?> call(Observable<? extends Throwable> attemps) {
-                return attemps
-                        .flatMap(new Func1<Throwable, Observable<?>>() {
+            public ObservableSource<?> apply(@NonNull Observable<? extends Throwable> observable) throws Exception {
+                return observable
+                        .flatMap(new Function<Throwable, ObservableSource<?>>() {
                             @Override
-                            public Observable<?> call(Throwable aLong) {
+                            public ObservableSource<?> apply(@NonNull Throwable throwable) throws Exception {
                                 return Observable.timer(delay, timeUnit, scheduler);
                             }
                         });

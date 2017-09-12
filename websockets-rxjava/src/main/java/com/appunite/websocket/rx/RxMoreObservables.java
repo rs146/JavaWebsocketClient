@@ -20,14 +20,13 @@ import com.appunite.websocket.rx.object.ObjectSerializer;
 import com.appunite.websocket.rx.object.ObjectWebSocketSender;
 import com.appunite.websocket.rx.object.RxObjectWebSockets;
 
-import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
 
+import io.reactivex.Single;
 import okhttp3.WebSocket;
-import rx.Single;
 
 public class RxMoreObservables {
 
@@ -46,12 +45,9 @@ public class RxMoreObservables {
      */
     @Nonnull
     public static Single<Boolean> sendMessage(final @Nonnull WebSocket sender, final @Nonnull String message) {
-        return Single.fromCallable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                logger.log(Level.FINE, "sendStringMessage: {0}", message);
-                return sender.send(message);
-            }
+        return Single.fromCallable(() -> {
+            logger.log(Level.FINE, "sendStringMessage: {0}", message);
+            return sender.send(message);
         });
     }
 
@@ -69,12 +65,9 @@ public class RxMoreObservables {
      */
     @Nonnull
     public static Single<Boolean> sendObjectMessage(final @Nonnull ObjectWebSocketSender sender, final @Nonnull Object message) {
-        return Single.fromCallable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                logger.log(Level.FINE, "sendStringMessage: {0}", message);
-                return sender.sendObjectMessage(message);
-            }
+        return Single.fromCallable(() -> {
+            logger.log(Level.FINE, "sendStringMessage: {0}", message);
+            return sender.sendObjectMessage(message);
         });
     }
 

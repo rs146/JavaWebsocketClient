@@ -22,8 +22,7 @@ import com.appunite.websocket.rx.object.ObjectWebSocketSender;
 
 import javax.annotation.Nonnull;
 
-import rx.Observable;
-import rx.functions.Func1;
+import io.reactivex.ObservableTransformer;
 
 /**
  * Event indicating that data returned by server was parsed
@@ -70,24 +69,9 @@ public class RxObjectEventMessage extends RxObjectEventConn {
      * @return Observable that returns given type of message
      */
     @Nonnull
-    public static <T> Observable.Transformer<RxObjectEventMessage, T> filterAndMap(@Nonnull final Class<T> clazz) {
-        return new Observable.Transformer<RxObjectEventMessage, T>() {
-            @Override
-            public Observable<T> call(Observable<RxObjectEventMessage> observable) {
-                return observable
-                        .filter(new Func1<RxObjectEventMessage, Boolean>() {
-                            @Override
-                            public Boolean call(RxObjectEventMessage o) {
-                                return o != null && clazz.isInstance(o.message());
-                            }
-                        })
-                        .map(new Func1<RxObjectEventMessage, T>() {
-                            @Override
-                            public T call(RxObjectEventMessage o) {
-                                return o.message();
-                            }
-                        });
-            }
-        };
+    public static <T> ObservableTransformer<RxObjectEventMessage, T> filterAndMap(@Nonnull final Class<T> clazz) {
+        return observable -> observable
+                .filter(o -> o != null && clazz.isInstance(o.message()))
+                .map(RxObjectEventMessage::message);
     }
 }

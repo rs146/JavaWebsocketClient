@@ -21,9 +21,9 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
 
-import rx.Observable;
-import rx.Observer;
-import rx.internal.operators.OperatorDoOnEach;
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 
 public class LoggingObservables {
 
@@ -31,13 +31,18 @@ public class LoggingObservables {
     public static Observer<Object> logging(@Nonnull final Logger logger, @Nonnull final String tag) {
         return new Observer<Object>() {
             @Override
-            public void onCompleted() {
+            public void onComplete() {
                 logger.log(Level.INFO, tag + " - onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
                 logger.log(Level.SEVERE, tag + " - onError", e);
+            }
+
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
             }
 
             @Override
@@ -51,7 +56,7 @@ public class LoggingObservables {
     public static Observer<Object> loggingOnlyError(@Nonnull final Logger logger, @Nonnull final String tag) {
         return new Observer<Object>() {
             @Override
-            public void onCompleted() {
+            public void onComplete() {
             }
 
             @Override
@@ -60,18 +65,12 @@ public class LoggingObservables {
             }
 
             @Override
+            public void onSubscribe(@NonNull Disposable d) {
+            }
+
+            @Override
             public void onNext(Object o) {
             }
         };
-    }
-
-    @Nonnull
-    public static <T> Observable.Operator<T, T> loggingLift(@Nonnull Logger logger, @Nonnull String tag) {
-        return new OperatorDoOnEach<>(logging(logger, tag));
-    }
-
-    @Nonnull
-    public static <T> Observable.Operator<T, T> loggingOnlyErrorLift(@Nonnull Logger logger, @Nonnull String tag) {
-        return new OperatorDoOnEach<>(loggingOnlyError(logger, tag));
     }
 }

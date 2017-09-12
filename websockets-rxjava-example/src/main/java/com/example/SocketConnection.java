@@ -20,7 +20,7 @@ import com.appunite.websocket.rx.object.messages.RxObjectEvent;
 
 import javax.annotation.Nonnull;
 
-import rx.Observable;
+import io.reactivex.Observable;
 
 public interface SocketConnection {
     @Nonnull

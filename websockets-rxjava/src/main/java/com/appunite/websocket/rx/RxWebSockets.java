@@ -25,16 +25,17 @@ import com.appunite.websocket.rx.object.messages.RxObjectEvent;
 
 import javax.annotation.Nonnull;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 import okio.ByteString;
-import rx.Observable;
-import rx.Subscriber;
-import rx.functions.Action0;
-import rx.subscriptions.Subscriptions;
 
 /**
  * This class allows to retrieve messages from websocket
@@ -63,60 +64,68 @@ public class RxWebSockets {
      */
     @Nonnull
     public Observable<RxEvent> webSocketObservable() {
-        return Observable.create(new Observable.OnSubscribe<RxEvent>() {
+        return Observable.create(new ObservableOnSubscribe<RxEvent>() {
 
             @Override
-            public void call(final Subscriber<? super RxEvent> subscriber) {
+            public void subscribe(@NonNull ObservableEmitter<RxEvent> observableEmitter) throws Exception {
                 final WebSocket webSocket = client.newWebSocket(request, new WebSocketListener() {
                     @Override
                     public void onOpen(WebSocket webSocket, Response response) {
-                        subscriber.onNext(new RxEventConnected(webSocket));
+                        observableEmitter.onNext(new RxEventConnected(webSocket));
                     }
 
                     @Override
                     public void onMessage(WebSocket webSocket, String text) {
-                        subscriber.onNext(new RxEventStringMessage(webSocket, text));
+                        observableEmitter.onNext(new RxEventStringMessage(webSocket, text));
                     }
 
                     @Override
                     public void onMessage(WebSocket webSocket, ByteString bytes) {
-                        subscriber.onNext(new RxEventBinaryMessage(webSocket, bytes.toByteArray()));
+                        observableEmitter.onNext(new RxEventBinaryMessage(webSocket, bytes.toByteArray()));
                     }
 
                     @Override
                     public void onClosing(WebSocket webSocket, int code, String reason) {
                         super.onClosing(webSocket, code, reason);
                         final ServerRequestedCloseException exception = new ServerRequestedCloseException(code, reason);
-                        subscriber.onNext(new RxEventDisconnected(exception));
-                        subscriber.onError(exception);
+                        observableEmitter.onNext(new RxEventDisconnected(exception));
+                        //observableEmitter.onError(exception);
                     }
 
                     @Override
                     public void onClosed(WebSocket webSocket, int code, String reason) {
                         final ServerRequestedCloseException exception = new ServerRequestedCloseException(code, reason);
-                        subscriber.onNext(new RxEventDisconnected(exception));
-                        subscriber.onError(exception);
+                        observableEmitter.onNext(new RxEventDisconnected(exception));
+                        //observableEmitter.onError(exception);
                     }
 
                     @Override
                     public void onFailure(WebSocket webSocket, Throwable t, Response response) {
                         if (response != null) {
                             final ServerHttpError exception = new ServerHttpError(response);
-                            subscriber.onNext(new RxEventDisconnected(exception));
-                            subscriber.onError(exception);
+                            observableEmitter.onNext(new RxEventDisconnected(exception));
+                            observableEmitter.onError(exception);
                         } else {
-                            subscriber.onNext(new RxEventDisconnected(t));
-                            subscriber.onError(t);
+                            observableEmitter.onNext(new RxEventDisconnected(t));
+                            observableEmitter.onError(t);
                         }
                     }
                 });
-                subscriber.add(Subscriptions.create(new Action0() {
+                observableEmitter.setDisposable(new Disposable() {
+                    volatile boolean disposed;
+
                     @Override
-                    public void call() {
+                    public void dispose() {
                         webSocket.close(1000, "Just disconnect");
-                        subscriber.onCompleted();
+                        observableEmitter.onComplete();
+                        disposed = true;
                     }
-                }));
+
+                    @Override
+                    public boolean isDisposed() {
+                        return disposed;
+                    }
+                });
             }
         });
     }
