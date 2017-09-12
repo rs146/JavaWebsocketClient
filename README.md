@@ -21,12 +21,7 @@ final Request request = new Request.Builder()
         .build();
 final Disposable disposable = new RxWebSockets(new OkHttpClient(), request)
         .webSocketObservable()
-        .subscribe(new Action1<RxEvent>() {
-            @Override
-            public void call(RxEvent rxEvent) {
-                System.out.println("Event: " + rxEvent.toString());
-            }
-        });
+        .subscribe(rxEvent -> System.out.println("Event: " + rxEvent.toString()));
 Thread.sleep(10000);
 disposable.dispose();
 ```
