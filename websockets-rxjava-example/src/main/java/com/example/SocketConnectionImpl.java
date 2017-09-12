@@ -16,8 +16,8 @@
 
 package com.example;
 
-import com.appunite.websocket.rx.object.RxObjectWebSockets;
-import com.appunite.websocket.rx.object.messages.RxObjectEvent;
+import com.appunite.websocket.rx.messages.RxObjectEvent;
+import com.appunite.websocket.rx.rxobject.RxObjectWebSockets;
 
 import java.util.concurrent.TimeUnit;
 
@@ -51,17 +51,12 @@ public class SocketConnectionImpl implements SocketConnection {
     @Nonnull
     private Function<Observable<? extends Throwable>, ObservableSource<?>> repeatDuration(final long delay,
                                                                                           @Nonnull final TimeUnit timeUnit) {
-        return new Function<Observable<? extends Throwable>, ObservableSource<?>>() {
-            @Override
-            public ObservableSource<?> apply(@NonNull Observable<? extends Throwable> observable) throws Exception {
-                return observable
-                        .flatMap(new Function<Throwable, ObservableSource<?>>() {
-                            @Override
-                            public ObservableSource<?> apply(@NonNull Throwable throwable) throws Exception {
-                                return Observable.timer(delay, timeUnit, scheduler);
-                            }
-                        });
-            }
-        };
+        return observable -> observable
+                .flatMap(new Function<Throwable, ObservableSource<?>>() {
+                    @Override
+                    public ObservableSource<?> apply(@NonNull Throwable throwable) throws Exception {
+                        return Observable.timer(delay, timeUnit, scheduler);
+                    }
+                });
     }
 }

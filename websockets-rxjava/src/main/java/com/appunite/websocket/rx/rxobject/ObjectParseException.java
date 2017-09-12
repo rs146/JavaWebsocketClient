@@ -14,18 +14,38 @@
  * limitations under the License
  */
 
-package com.appunite.websocket.rx.object.messages;
+package com.appunite.websocket.rx.rxobject;
 
 /**
- * Abstract class for all RxJsonEvents
- *
- * @see RxObjectEventConnected
- * @see RxObjectEventConnected
- * @see RxObjectEventMessage
- * @see RxObjectEventWrongMessageFormat
+ * Exception throw by {@link ObjectSerializer} if serialization or deserialization fail
  */
-public abstract class RxObjectEvent {
+public class ObjectParseException extends Exception {
 
-    @Override
-    public abstract  String toString();
+    /**
+     * {@inheritDoc}
+     */
+    public ObjectParseException() {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ObjectParseException(String message) {
+        super(message);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ObjectParseException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ObjectParseException(Throwable cause) {
+        super(cause);
+    }
+
 }

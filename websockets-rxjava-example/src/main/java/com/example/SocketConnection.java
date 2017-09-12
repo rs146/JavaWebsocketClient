@@ -16,7 +16,7 @@
 
 package com.example;
 
-import com.appunite.websocket.rx.object.messages.RxObjectEvent;
+import com.appunite.websocket.rx.messages.RxObjectEvent;
 
 import javax.annotation.Nonnull;
 

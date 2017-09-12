@@ -14,25 +14,22 @@
  * limitations under the License
  */
 
-package com.appunite.websocket.rx.object;
+package com.appunite.websocket.rx.rxobject;
 
 import com.appunite.websocket.rx.RxWebSockets;
 import com.appunite.websocket.rx.messages.RxEventBinaryMessage;
-import com.appunite.websocket.rx.object.messages.RxObjectEvent;
-import com.appunite.websocket.rx.object.messages.RxObjectEventMessage;
+import com.appunite.websocket.rx.messages.RxObjectEvent;
+import com.appunite.websocket.rx.messages.RxObjectEventConnected;
+import com.appunite.websocket.rx.messages.RxObjectEventDisconnected;
+import com.appunite.websocket.rx.rxobject.messages.RxObjectEventMessage;
 import com.appunite.websocket.rx.messages.RxEvent;
 import com.appunite.websocket.rx.messages.RxEventConnected;
 import com.appunite.websocket.rx.messages.RxEventDisconnected;
 import com.appunite.websocket.rx.messages.RxEventStringMessage;
-import com.appunite.websocket.rx.object.messages.RxObjectEventWrongBinaryMessageFormat;
-import com.appunite.websocket.rx.object.messages.RxObjectEventConnected;
-import com.appunite.websocket.rx.object.messages.RxObjectEventWrongStringMessageFormat;
-import com.appunite.websocket.rx.object.messages.RxObjectEventDisconnected;
-
-import org.reactivestreams.Subscriber;
+import com.appunite.websocket.rx.rxobject.messages.RxObjectEventWrongBinaryMessageFormat;
+import com.appunite.websocket.rx.rxobject.messages.RxObjectEventWrongStringMessageFormat;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableOperator;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
@@ -90,9 +87,9 @@ public class RxObjectWebSockets {
                     @Override
                     public void onNext(RxEvent rxEvent) {
                         if (rxEvent instanceof RxEventConnected) {
-                            observer.onNext(new RxObjectEventConnected(jsonSocketSender(((RxEventConnected) rxEvent).sender())));
+                            observer.onNext(new RxObjectEventConnected(jsonSocketSender(((RxEventConnected) rxEvent).getSender())));
                         } else if (rxEvent instanceof RxEventDisconnected) {
-                            observer.onNext(new RxObjectEventDisconnected(((RxEventDisconnected) rxEvent).exception()));
+                            observer.onNext(new RxObjectEventDisconnected(((RxEventDisconnected) rxEvent).getThrowable()));
                         } else if (rxEvent instanceof RxEventStringMessage) {
                             final RxEventStringMessage stringMessage = (RxEventStringMessage) rxEvent;
                             observer.onNext(parseMessage(stringMessage));
@@ -105,25 +102,25 @@ public class RxObjectWebSockets {
                     }
 
                     private RxObjectEvent parseMessage(RxEventStringMessage stringMessage) {
-                        final String message = stringMessage.message();
+                        final String message = stringMessage.getMessage();
                         final Object object;
                         try {
                             object = objectSerializer.serialize(message);
                         } catch (ObjectParseException e) {
-                            return new RxObjectEventWrongStringMessageFormat(jsonSocketSender(stringMessage.sender()), message, e);
+                            return new RxObjectEventWrongStringMessageFormat(jsonSocketSender(stringMessage.getSender()), message, e);
                         }
-                        return new RxObjectEventMessage(jsonSocketSender(stringMessage.sender()), object);
+                        return new RxObjectEventMessage(jsonSocketSender(stringMessage.getSender()), object);
                     }
 
                     private RxObjectEvent parseMessage(RxEventBinaryMessage binaryMessage) {
-                        final byte[] message = binaryMessage.message();
+                        final byte[] message = binaryMessage.getMessage();
                         final Object object;
                         try {
                             object = objectSerializer.serialize(message);
                         } catch (ObjectParseException e) {
-                            return new RxObjectEventWrongBinaryMessageFormat(jsonSocketSender(binaryMessage.sender()), message, e);
+                            return new RxObjectEventWrongBinaryMessageFormat(jsonSocketSender(binaryMessage.getSender()), message, e);
                         }
-                        return new RxObjectEventMessage(jsonSocketSender(binaryMessage.sender()), object);
+                        return new RxObjectEventMessage(jsonSocketSender(binaryMessage.getSender()), object);
                     }
                 });
     }

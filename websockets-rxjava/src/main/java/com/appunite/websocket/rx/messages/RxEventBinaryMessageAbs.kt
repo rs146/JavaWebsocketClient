@@ -14,25 +14,14 @@
  * limitations under the License
  */
 
-package com.appunite.websocket.rx.object.messages;
+package com.appunite.websocket.rx.messages
 
-import com.appunite.websocket.rx.object.ObjectWebSocketSender;
-import com.appunite.websocket.rx.messages.RxEventConnected;
-
-import javax.annotation.Nonnull;
+import okhttp3.WebSocket;
 
 /**
- * Event indicate that client was connected to the server
+ * Abstract class for binary messages returned by server
  *
- * @see RxEventConnected
+ * @see RxEventBinaryMessage
+ * @see RxEventPong
  */
-public class RxObjectEventConnected extends RxObjectEventConn {
-    public RxObjectEventConnected(@Nonnull ObjectWebSocketSender sender) {
-        super(sender);
-    }
-
-    @Override
-    public String toString() {
-        return "RxJsonEventConnected{}";
-    }
-}
+abstract class RxEventBinaryMessageAbs(sender: WebSocket, val message: ByteArray) : RxEventConn(sender)

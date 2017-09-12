@@ -14,23 +14,14 @@
  * limitations under the License
  */
 
-package com.appunite.websocket.rx.messages;
+package com.appunite.websocket.rx.messages
 
-import okhttp3.WebSocket;
-
-import javax.annotation.Nonnull;
+import okhttp3.WebSocket
 
 /**
- * Event indicate that client was connected to the server
+ * Event indicating that server sent a string message
  */
-public class RxEventConnected extends RxEventConn {
+class RxEventStringMessage(sender: WebSocket, val message: String): RxEventConn(sender) {
 
-    public RxEventConnected(@Nonnull WebSocket sender) {
-        super(sender);
-    }
-
-    @Override
-    public String toString() {
-        return "ConnectedRxEvent{}";
-    }
+    override fun toString():String = "StringMessageRxEvent{message='$message'}"
 }

@@ -14,7 +14,7 @@
  * limitations under the License
  */
 
-package com.appunite.websocket.rx.object;
+package com.appunite.websocket.rx.rxobject;
 
 import javax.annotation.Nonnull;
 

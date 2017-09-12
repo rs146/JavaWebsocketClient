@@ -14,27 +14,20 @@
  * limitations under the License
  */
 
-package com.appunite.websocket.rx.messages;
-
-import okhttp3.WebSocket;
-
-import java.util.Arrays;
-
-import javax.annotation.Nonnull;
+package com.appunite.websocket.rx.messages
 
 /**
- * Event indicating that binary was returned by server
+ * Event indicate that client was disconnected to the server
+ *
+ * since then all execution on previously returned {@link okhttp3.WebSocket} will cause throwing
+ * {@link java.io.IOException}
  */
-public class RxEventBinaryMessage extends RxEventBinaryMessageAbs {
+class RxEventDisconnected(val throwable: Throwable): RxEvent() {
 
-    public RxEventBinaryMessage(@Nonnull WebSocket sender, @Nonnull byte[] message) {
-        super(sender, message);
-    }
+    override fun toString(): String = "DisconnectedRxEvent{e=$throwable}"
+}
 
-    @Override
-    public String toString() {
-        return "RxEventBinaryMessage{" +
-                "message=" + Arrays.toString(message()) +
-                '}';
-    }
+class RxObjectEventDisconnected(private val throwable: Throwable): RxObjectEvent() {
+
+    override fun toString(): String = "RxJsonEventDisconnected{exception=$throwable}"
 }

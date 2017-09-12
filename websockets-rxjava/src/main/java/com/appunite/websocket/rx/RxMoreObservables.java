@@ -16,9 +16,9 @@
 
 package com.appunite.websocket.rx;
 
-import com.appunite.websocket.rx.object.ObjectSerializer;
-import com.appunite.websocket.rx.object.ObjectWebSocketSender;
-import com.appunite.websocket.rx.object.RxObjectWebSockets;
+import com.appunite.websocket.rx.rxobject.ObjectSerializer;
+import com.appunite.websocket.rx.rxobject.ObjectWebSocketSender;
+import com.appunite.websocket.rx.rxobject.RxObjectWebSockets;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

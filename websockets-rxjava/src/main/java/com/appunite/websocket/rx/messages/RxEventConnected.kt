@@ -14,38 +14,25 @@
  * limitations under the License
  */
 
-package com.appunite.websocket.rx.object;
+package com.appunite.websocket.rx.messages
+
+import com.appunite.websocket.rx.rxobject.ObjectWebSocketSender
+import okhttp3.WebSocket
 
 /**
- * Exception throw by {@link ObjectSerializer} if serialization or deserialization fail
+ * Event indicate that client was connected to the server
  */
-public class ObjectParseException extends Exception {
+class RxEventConnected(sender: WebSocket): RxEventConn(sender) {
 
-    /**
-     * {@inheritDoc}
-     */
-    public ObjectParseException() {
-    }
+    override fun toString(): String = "ConnectedRxEvent{}"
+}
 
-    /**
-     * {@inheritDoc}
-     */
-    public ObjectParseException(String message) {
-        super(message);
-    }
+/**
+ * Event indicate that client was connected to the server
+ *
+ * @see RxEventConnected
+ */
+class RxObjectEventConnected(sender: ObjectWebSocketSender): RxObjectEventConn(sender) {
 
-    /**
-     * {@inheritDoc}
-     */
-    public ObjectParseException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public ObjectParseException(Throwable cause) {
-        super(cause);
-    }
-
+    override fun toString():String = "RxJsonEventConnected{}"
 }

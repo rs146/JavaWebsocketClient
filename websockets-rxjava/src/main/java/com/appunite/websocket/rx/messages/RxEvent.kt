@@ -14,36 +14,28 @@
  * limitations under the License
  */
 
-package com.appunite.websocket.rx.messages;
+package com.appunite.websocket.rx.messages
 
-import okhttp3.WebSocket;
-
-import javax.annotation.Nonnull;
+import com.appunite.websocket.rx.rxobject.messages.RxObjectEventMessage
+import com.appunite.websocket.rx.rxobject.messages.RxObjectEventWrongMessageFormat
 
 /**
- * Abstract class for binary messages returned by server
+ * Abstract class for all RxEvents
  *
+ * @see RxEventConnected
+ * @see RxEventDisconnected
  * @see RxEventBinaryMessage
+ * @see RxEventStringMessage
  * @see RxEventPong
  */
-public abstract class RxEventBinaryMessageAbs extends RxEventConn {
+abstract class RxEvent
 
-    @Nonnull
-    private final byte[] message;
-
-    public RxEventBinaryMessageAbs(@Nonnull WebSocket sender, @Nonnull byte[] message) {
-        super(sender);
-        this.message = message;
-    }
-
-    /**
-     * Binary message that was returned by server
-     *
-     * @return binary message
-     */
-    @Nonnull
-    public byte[] message() {
-        return message;
-    }
-
-}
+/**
+ * Abstract class for all RxJsonEvents
+ *
+ * @see RxObjectEventConnected
+ * @see RxObjectEventConnected
+ * @see RxObjectEventMessage
+ * @see RxObjectEventWrongMessageFormat
+ */
+abstract class RxObjectEvent

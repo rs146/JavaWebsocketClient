@@ -21,7 +21,6 @@ import com.appunite.websocket.rx.messages.RxEventBinaryMessage;
 import com.appunite.websocket.rx.messages.RxEventConnected;
 import com.appunite.websocket.rx.messages.RxEventDisconnected;
 import com.appunite.websocket.rx.messages.RxEventStringMessage;
-import com.appunite.websocket.rx.object.messages.RxObjectEvent;
 
 import javax.annotation.Nonnull;
 
@@ -58,7 +57,7 @@ public class RxWebSockets {
     }
 
     /**
-     * Returns observable that connected to a websocket and returns {@link RxObjectEvent}'s
+     * Returns observable that connected to a websocket and returns {@link com.appunite.websocket.rx.messages.RxObjectEvent}'s
      *
      * @return Observable that connects to websocket
      */
@@ -96,7 +95,7 @@ public class RxWebSockets {
                     public void onClosed(WebSocket webSocket, int code, String reason) {
                         final ServerRequestedCloseException exception = new ServerRequestedCloseException(code, reason);
                         observableEmitter.onNext(new RxEventDisconnected(exception));
-                        //observableEmitter.onError(exception);
+                        observableEmitter.onComplete();
                     }
 
                     @Override

@@ -16,32 +16,16 @@
 
 package com.appunite.websocket.rx.messages;
 
-import okhttp3.WebSocket;
-
-import javax.annotation.Nonnull;
+import com.appunite.websocket.rx.rxobject.ObjectWebSocketSender
+import okhttp3.WebSocket
 
 /**
- * Abstract class for {@link RxEvent} that allows sending messages to the server using
- * {@link #sender()} method
+ * Abstract class for {@link RxEvent} that allows sending messages to the server using get sender.
  */
-public abstract class RxEventConn extends RxEvent {
-    @Nonnull
-    private final WebSocket sender;
+abstract class RxEventConn(val sender: WebSocket): RxEvent()
 
-    public RxEventConn(@Nonnull WebSocket sender) {
-        this.sender = sender;
-    }
-
-    /**
-     * Get sender
-     *
-     * Sender is valid until disconnection from server ({@link RxEventDisconnected} event)
-     *
-     * @return instance of {@link WebSocket} that allows you to send back messages to server
-     */
-    @Nonnull
-    public WebSocket sender() {
-        return sender;
-    }
-
-}
+/**
+ * Abstract class for {@link RxObjectEvent} that allows sending messages to the server using
+ * {@link #getSender()} method.
+ */
+abstract class RxObjectEventConn(val sender: ObjectWebSocketSender): RxObjectEvent()

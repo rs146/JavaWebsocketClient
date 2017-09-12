@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 
+import com.appunite.websocket.rx.SchedulerProvider;
 import com.appunite.websocket.rx.messages.RxEventBinaryMessage;
 
 import java.util.Arrays;
@@ -28,13 +29,14 @@ public class MainActivity extends AppCompatActivity {
 
         compositeDisposable = new CompositeDisposable();
 
+        SchedulerProvider schedulerProvider = new SchedulerProvider(Schedulers.io(), AndroidSchedulers.mainThread());
+
         compositeDisposable.add(mainViewModel.reactToWebSocket()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(schedulerProvider.getSchedulersTransformer())
                 .subscribe(rxEvent -> {
                     if (rxEvent instanceof RxEventBinaryMessage) {
                         RxEventBinaryMessage rxEventBinaryMessage = (RxEventBinaryMessage) rxEvent;
-                        byte[] message = rxEventBinaryMessage.message();
+                        byte[] message = rxEventBinaryMessage.getMessage();
                         String s1 = Arrays.toString(message);
                         String s2 = new String(message);
                         Log.d(getClass().getSimpleName(), s2);

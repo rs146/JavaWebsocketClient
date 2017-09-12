@@ -14,27 +14,16 @@
  * limitations under the License
  */
 
-package com.appunite.websocket.rx.messages;
+package com.appunite.websocket.rx.messages
 
-import okhttp3.WebSocket;
+import okhttp3.WebSocket
 
-import java.util.Arrays;
-
-import javax.annotation.Nonnull;
+import java.util.Arrays
 
 /**
- * Event indicate that server send pong response
+ * Event indicating that binary was returned by server
  */
-public class RxEventPong extends RxEventBinaryMessageAbs {
+class RxEventBinaryMessage(sender: WebSocket, message: ByteArray): RxEventBinaryMessageAbs(sender, message) {
 
-    public RxEventPong(@Nonnull WebSocket sender, @Nonnull byte[] message) {
-        super(sender, message);
-    }
-
-    @Override
-    public String toString() {
-        return "PongMessageRxEvent{" +
-                "message=" + Arrays.toString(message()) +
-                '}';
-    }
+    override fun toString(): String = "RxEventBinaryMessage{message=${Arrays.toString(message)}}"
 }

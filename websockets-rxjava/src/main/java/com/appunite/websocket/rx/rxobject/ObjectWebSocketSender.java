@@ -14,12 +14,10 @@
  * limitations under the License
  */
 
-package com.appunite.websocket.rx.object;
+package com.appunite.websocket.rx.rxobject;
 
-import com.appunite.websocket.rx.object.messages.RxObjectEventConnected;
-import com.appunite.websocket.rx.object.messages.RxObjectEventDisconnected;
-
-import java.io.IOException;
+import com.appunite.websocket.rx.messages.RxObjectEventConnected;
+import com.appunite.websocket.rx.messages.RxObjectEventDisconnected;
 
 import javax.annotation.Nonnull;
 
