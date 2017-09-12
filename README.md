@@ -4,12 +4,6 @@ It is designed to be fast and fault tolerant.
 
 Currently we use okhttp3 for websocket connection because okhttp3 is simple and well tested solution.
 
-[![Build Status](https://travis-ci.org/jacek-marchwicki/JavaWebsocketClient.svg?branch=master)](https://travis-ci.org/jacek-marchwicki/JavaWebsocketClient)
-
-[![Release](https://jitpack.io/v/jacek-marchwicki/JavaWebsocketClient.svg)](https://jitpack.io/#jacek-marchwicki/JavaWebsocketClient)
-
-![Presentation of example](imgs/presentation.gif)
-
 ## Content of the package
 
 * Example websockets server [python twisted server](websockets-server/README.md)
@@ -25,7 +19,7 @@ final Request request = new Request.Builder()
         .get()
         .url("ws://10.10.0.2:8080/ws")
         .build();
-final Subscription subscribe = new RxWebSockets(new OkHttpClient(), request)
+final Disposable disposable = new RxWebSockets(new OkHttpClient(), request)
         .webSocketObservable()
         .subscribe(new Action1<RxEvent>() {
             @Override
@@ -34,7 +28,7 @@ final Subscription subscribe = new RxWebSockets(new OkHttpClient(), request)
             }
         });
 Thread.sleep(10000);
-subscribe.unsubscribe();
+disposable.dispose();
 ```
 
 Send message on connected:
