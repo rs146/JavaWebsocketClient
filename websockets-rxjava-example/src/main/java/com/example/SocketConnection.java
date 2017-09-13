@@ -20,9 +20,9 @@ import com.appunite.websocket.rx.messages.RxObjectEvent;
 
 import javax.annotation.Nonnull;
 
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 
-public interface SocketConnection {
+interface SocketConnection {
     @Nonnull
-    Observable<RxObjectEvent> connection();
+    Flowable<RxObjectEvent> connection();
 }

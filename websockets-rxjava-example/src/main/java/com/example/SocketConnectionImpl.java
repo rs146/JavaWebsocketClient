@@ -23,11 +23,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
+import io.reactivex.Flowable;
 import io.reactivex.Scheduler;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Function;
 
 public class SocketConnectionImpl implements SocketConnection {
 
@@ -43,20 +40,8 @@ public class SocketConnectionImpl implements SocketConnection {
 
     @Nonnull
     @Override
-    public Observable<RxObjectEvent> connection() {
-        return sockets.webSocketObservable()
-                .retryWhen(repeatDuration(1, TimeUnit.SECONDS));
-    }
-
-    @Nonnull
-    private Function<Observable<? extends Throwable>, ObservableSource<?>> repeatDuration(final long delay,
-                                                                                          @Nonnull final TimeUnit timeUnit) {
-        return observable -> observable
-                .flatMap(new Function<Throwable, ObservableSource<?>>() {
-                    @Override
-                    public ObservableSource<?> apply(@NonNull Throwable throwable) throws Exception {
-                        return Observable.timer(delay, timeUnit, scheduler);
-                    }
-                });
+    public Flowable<RxObjectEvent> connection() {
+        return sockets.webSocketFlowable()
+                .retryWhen(throwableFlowable -> Flowable.timer(1, TimeUnit.SECONDS, scheduler));
     }
 }

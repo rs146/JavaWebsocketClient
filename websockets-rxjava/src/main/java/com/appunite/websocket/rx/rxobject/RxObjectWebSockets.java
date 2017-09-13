@@ -29,10 +29,11 @@ import com.appunite.websocket.rx.messages.RxEventStringMessage;
 import com.appunite.websocket.rx.rxobject.messages.RxObjectEventWrongBinaryMessageFormat;
 import com.appunite.websocket.rx.rxobject.messages.RxObjectEventWrongStringMessageFormat;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
+import org.reactivestreams.Subscription;
+
+import io.reactivex.Flowable;
+import io.reactivex.FlowableSubscriber;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
 import okhttp3.WebSocket;
 
 import javax.annotation.Nonnull;
@@ -61,13 +62,13 @@ public class RxObjectWebSockets {
     /**
      * Returns observable that connected to a websocket and returns {@link RxObjectEvent}s
      *
-     * @return Observable that connects to websocket
-     * @see RxWebSockets#webSocketObservable()
+     * @return Flowable that connects to websocket
+     * @see RxWebSockets#webSocketFlowable()
      */
     @Nonnull
-    public Observable<RxObjectEvent> webSocketObservable() {
-        return rxWebSockets.webSocketObservable()
-                .lift(observer -> new Observer<RxEvent>() {
+    public Flowable<RxObjectEvent> webSocketFlowable() {
+        return rxWebSockets.webSocketFlowable()
+                .lift(observer -> new FlowableSubscriber<RxEvent>() {
 
                     @Override
                     public void onComplete() {
@@ -80,8 +81,8 @@ public class RxObjectWebSockets {
                     }
 
                     @Override
-                    public void onSubscribe(@NonNull Disposable d) {
-                        observer.onSubscribe(d);
+                    public void onSubscribe(@NonNull Subscription subscription) {
+                        observer.onSubscribe(subscription);
                     }
 
                     @Override

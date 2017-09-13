@@ -1,8 +1,6 @@
 package com.appunite.websocket.rx
 
-import io.reactivex.Observable
-import io.reactivex.ObservableTransformer
-import io.reactivex.Scheduler
+import io.reactivex.*
 
 /**
  * Wrapper class for two Schedulers.
@@ -19,6 +17,13 @@ class SchedulerProvider(val backgroundScheduler: Scheduler, val foregroundSchedu
     fun <T> getSchedulersTransformer(): ObservableTransformer<T, T> {
         return ObservableTransformer { observable: Observable<T> ->
             observable.subscribeOn(backgroundScheduler)
+                    .observeOn(foregroundScheduler)
+        }
+    }
+
+    fun <T> getFlowableSchedulersTransformer(): FlowableTransformer<T, T> {
+        return FlowableTransformer { flowable: Flowable<T> ->
+            flowable.subscribeOn(backgroundScheduler)
                     .observeOn(foregroundScheduler)
         }
     }

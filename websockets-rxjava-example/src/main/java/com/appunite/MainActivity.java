@@ -1,7 +1,7 @@
 package com.appunite;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
 
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         SchedulerProvider schedulerProvider = new SchedulerProvider(Schedulers.io(), AndroidSchedulers.mainThread());
 
         compositeDisposable.add(mainViewModel.reactToWebSocket()
-                .compose(schedulerProvider.getSchedulersTransformer())
+                .compose(schedulerProvider.getFlowableSchedulersTransformer())
                 .subscribe(rxEvent -> {
                     if (rxEvent instanceof RxEventBinaryMessage) {
                         RxEventBinaryMessage rxEventBinaryMessage = (RxEventBinaryMessage) rxEvent;
@@ -41,9 +41,7 @@ public class MainActivity extends AppCompatActivity {
                         String s2 = new String(message);
                         Log.d(getClass().getSimpleName(), s2);
                     }
-                }, throwable -> {
-                    Log.d(getClass().getSimpleName(), throwable.getMessage());
-                }));
+                }, throwable -> Log.d(getClass().getSimpleName(), throwable.getMessage())));
 
         button.setOnClickListener(view -> {
             compositeDisposable.dispose();

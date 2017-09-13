@@ -16,6 +16,9 @@
 
 package com.example;
 
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,8 +31,8 @@ import io.reactivex.disposables.Disposable;
 public class LoggingObservables {
 
     @Nonnull
-    public static Observer<Object> logging(@Nonnull final Logger logger, @Nonnull final String tag) {
-        return new Observer<Object>() {
+    public static Subscriber<Object> logging(@Nonnull final Logger logger, @Nonnull final String tag) {
+        return new Subscriber<Object>() {
             @Override
             public void onComplete() {
                 logger.log(Level.INFO, tag + " - onCompleted");
@@ -41,7 +44,7 @@ public class LoggingObservables {
             }
 
             @Override
-            public void onSubscribe(@NonNull Disposable d) {
+            public void onSubscribe(@NonNull Subscription subscription) {
 
             }
 
